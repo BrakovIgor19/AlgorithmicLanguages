@@ -1,21 +1,105 @@
 #include "PipeInspections.h"
 
-string PipeInspections::CheckId(short xError, short yError, bool showError, bool flag, string str)
+string PipeInspections::CheckId(Logger &log, bool correctInput, string &str)
 {
-	return to_string(CheckingInput::Input<int>(xError, yError, showError, flag));
+    string strBuf; int bufX = Console::getXcoord(), bufY = Console::getYcoord(), errorCode; string bufEmptyStr = "";
+
+	do {
+		Console::SetColor(Black, LightGreen);
+		Console::ShowCursor(true);
+		getline(cin, strBuf);
+		Console::ShowCursor(false);
+		errorCode = CheckingInput::CheckError<int>(strBuf);
+		if (errorCode == 0)
+		{
+			PlaySoundA("ui_hacking_passgood.wav", NULL, SND_ASYNC);
+			log.Update(CheckingInput::arrayErrors[errorCode]);
+			return strBuf;
+		}
+		else
+		{
+			PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
+			log.Update(CheckingInput::arrayErrors[errorCode]);
+			Console::SetColor(Black, LightGreen);
+			Console::gotoxy(bufX, bufY);
+			for (int i = 0; i < strBuf.size(); ++i)
+			{
+				cout << " ";
+			}
+			Console::gotoxy(bufX, bufY);
+			strBuf = "-1";
+		}
+	}
+    while (correctInput);
+    return strBuf;
 }
 
-string PipeInspections::CheckLenght(short xError, short yError, bool showError, bool flag, string str)
+string PipeInspections::CheckLenght(Logger &log, bool correctInput, string &str)
 {
-	return to_string(CheckingInput::Input<float>(xError, yError, showError, flag));
+	string strBuf; int bufX = Console::getXcoord(), bufY = Console::getYcoord(), errorCode; string bufEmptyStr = "";
+	
+	do {
+		Console::SetColor(Black, LightGreen);
+		Console::ShowCursor(true);
+		getline(cin, strBuf);
+		Console::ShowCursor(false);
+		errorCode = CheckingInput::CheckError<float>(strBuf);
+		if (errorCode == 0)
+		{
+			PlaySoundA("ui_hacking_passgood.wav", NULL, SND_ASYNC);
+			log.Update(CheckingInput::arrayErrors[errorCode]);
+			return strBuf;
+		}
+		else
+		{
+			PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
+			log.Update(CheckingInput::arrayErrors[errorCode]);
+			Console::SetColor(Black, LightGreen);
+			Console::gotoxy(bufX, bufY);
+			for (int i = 0; i < strBuf.size(); ++i)
+			{
+				cout << " ";
+			}
+			Console::gotoxy(bufX, bufY);
+			strBuf = "-1.000000";
+		}
+	} while (correctInput);
+	return strBuf;
 }
 
-string PipeInspections::CheckDiameter(short xError, short yError, bool showError, bool flag, string str)
+string PipeInspections::CheckDiameter(Logger &log, bool correctInput, string &str)
 {
-	return to_string(CheckingInput::Input<int>(xError, yError, showError, flag));
+	string strBuf;  int bufX = Console::getXcoord(), bufY = Console::getYcoord(), errorCode; string bufEmptyStr = "";
+	do {
+		Console::SetColor(Black, LightGreen);
+		Console::ShowCursor(true);
+		getline(cin, strBuf);
+		Console::ShowCursor(false);
+		errorCode = CheckingInput::CheckError<int>(strBuf);
+		if (errorCode == 0)
+		{
+			PlaySoundA("ui_hacking_passgood.wav", NULL, SND_ASYNC);
+			log.Update(CheckingInput::arrayErrors[errorCode]);
+			return strBuf;
+		}
+		else
+		{
+			PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
+			log.Update(CheckingInput::arrayErrors[errorCode]);
+			Console::SetColor(Black, LightGreen);
+			Console::gotoxy(bufX, bufY);
+			for (int i = 0; i < strBuf.size(); ++i)
+			{
+				cout << " ";
+			}
+			Console::gotoxy(bufX, bufY);
+			strBuf = "-1";
+		}
+	} while (correctInput);
+	return strBuf;
 }
 
-string PipeInspections::CheckSignRepair(short xError, short yError, bool showError, bool flag, string str)
+string PipeInspections::CheckSignRepair(Logger &log, bool correctInput, string &str)
 {
 	for (int i = 0; i < 2; ++i)
 	{
@@ -29,11 +113,13 @@ string PipeInspections::CheckSignRepair(short xError, short yError, bool showErr
 			case UP:
 			{
 				PlaySoundA("ui_repairweapon_02.wav", NULL, SND_ASYNC);
+				log.Update(CheckingInput::arrayErrors[0]);
 				return "Исправна";
 			}
 			case DOWN:
 			{
 				PlaySoundA("ui_repairweapon_02.wav", NULL, SND_ASYNC);
+				log.Update(CheckingInput::arrayErrors[0]);
 				return "В ремонте";
 			}
 		}
@@ -42,7 +128,7 @@ string PipeInspections::CheckSignRepair(short xError, short yError, bool showErr
 	return "-1";
 }
 
-vector<function<string(short, short, bool, bool, string)>> PipeInspections::pipeInspections = {
+vector<function<string(Logger &log, bool correctInput, string &str)>> PipeInspections::pipeInspections = {
 																						CheckId,
 																						CheckLenght,
 																						CheckDiameter,

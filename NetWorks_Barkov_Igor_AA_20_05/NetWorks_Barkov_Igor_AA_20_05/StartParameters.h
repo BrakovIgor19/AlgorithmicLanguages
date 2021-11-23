@@ -20,8 +20,8 @@ struct StartParameters
 		6 = Yellow E = Light Yellow
 		7 = White F = Bright White*/
 		 system("color 0A");
-		 Console::SetBufferScreenSize(135, 120);
-		 Console::SetCoordWindow(0, 0, 134, 43);
+		 Console::SetBufferScreenSize(175, 120);
+		 Console::SetCoordWindow(0, 0, 174, 5);
 		 Console::SetTitle(L"Терминал трубопроводой сети");
 		 setlocale(LC_CTYPE, "rus");
 		 Console::SetFont(10, L"Lucida Console");

@@ -5,6 +5,7 @@
 #include "CheckingInput.h"
 #include "ConsoleFormatOutIn.h"
 #include "ConsoleKey.h"
+#include "Logger.h"
 
 using std::string;
 using std::function;
@@ -17,11 +18,11 @@ using std::to_string;
 
 struct PipeInspections
 {
-	static vector<function<string(short, short, bool, bool, string)>> pipeInspections;
-	static string CheckId(short xError, short yError, bool showError, bool flag, string str);
-	static string CheckLenght(short xError, short yError, bool showError, bool flag, string str);
-	static string CheckDiameter(short xError, short yError, bool showError, bool flag, string str);
-	static string CheckSignRepair(short xError, short yError, bool showError, bool flag, string str);
+	static vector<function<string(Logger&, bool, string&)>> pipeInspections;
+	static string CheckId(Logger &log, bool correctInput, string &str);
+	static string CheckLenght(Logger &log, bool correctInput, string &str);
+	static string CheckDiameter(Logger &log, bool correctInput, string &str);
+	static string CheckSignRepair(Logger &log, bool correctInput, string &str);
 };
 
 #endif 

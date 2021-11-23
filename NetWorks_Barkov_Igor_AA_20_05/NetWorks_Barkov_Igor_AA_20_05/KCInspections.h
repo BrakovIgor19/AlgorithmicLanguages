@@ -4,7 +4,7 @@
 #include <conio.h>
 #include "CheckingInput.h"
 #include "ConsoleFormatOutIn.h"
-
+#include "Logger.h"
 
 
 using std::string;
@@ -18,12 +18,12 @@ using std::to_string;
 
 struct KCInspections
 {
-	static vector<function<string(short, short, bool, bool, string)>> kcInspections;
-	static string CheckId(short xError, short yError, bool showError, bool flag, string str);
-	static string CheckName(short xError, short yError, bool showError, bool flag, string str);
-	static string CheckNumberWorkshops(short xError, short yError, bool showError, bool flag, string str);
-	static string ChecknumberWorkshopsOperation(short xError, short yError, bool showError, bool flag, string str);
-	static string CheckEffectiveness(short xError, short yError, bool showError, bool flag, string str);
+	static vector<function<string(Logger&, bool, string&)>> kcInspections;
+	static string CheckId(Logger& log, bool correctInput, string& str);
+	static string CheckName(Logger& log, bool correctInput, string& str);
+	static string CheckNumberWorkshops(Logger& log, bool correctInput, string& str);
+	static string ChecknumberWorkshopsOperation(Logger& log, bool correctInput, string& str);
+	static string CheckEffectiveness(Logger& log, bool correctInput, string& str);
 };
 
 #endif

@@ -1,8 +1,6 @@
 #include "Table.h"
 
 
-using std::cout;
-using std::endl;
 
 void Table::DrawCell(int width, int height, char symbol) const
 {
@@ -100,7 +98,7 @@ bool Table::SelectCell()
     }
 }
 
-void Table::EditCell(bool flag)
+void Table::EditCell(bool correctInput)
 {   
     string bufStr;
     for (int i = 0; i < date[filterDateIndex[activeCell[1]]][activeCell[0]].size(); ++i)
@@ -114,18 +112,18 @@ void Table::EditCell(bool flag)
     {
        if (activeCell[0] > 0)
        {
-           bufStr = inspections[activeCell[0]](GetRightX() + 40, GetRightY() + 25, false, flag, date[filterDateIndex[activeCell[1]]][activeCell[0] - 1]);
+           bufStr = inspections[activeCell[0]](*log, correctInput, date[filterDateIndex[activeCell[1]]][activeCell[0] - 1]);
        }
        else
        {
-           bufStr = inspections[activeCell[0]](GetRightX() + 40, GetRightY() + 25, false, flag, date[filterDateIndex[activeCell[1]]][activeCell[0]]);
+           bufStr = inspections[activeCell[0]](*log, correctInput, date[filterDateIndex[activeCell[1]]][activeCell[0]]);
        }
        if ((bufStr != "-1") && (bufStr != "-1.000000"))
        {
            date[filterDateIndex[activeCell[1]]][activeCell[0]] = bufStr;
            break;
        }      
-    } while (flag);
+    } while (correctInput);
     ConsoleFormatOutIn::WriteTextCenterThisCoord(cellCoords[activeCell[1]][activeCell[0]][0] + widthColumns[activeCell[0]] / 2, cellCoords[activeCell[1]][activeCell[0]][1] + heightLines[activeCell[1]] / 2, date[filterDateIndex[activeCell[1]]][activeCell[0]]);
 }
 
@@ -197,7 +195,7 @@ bool Table::SelectStr()
     }
 }
 
-Table::Table(short left, short top, const vector<int> &heightLines, const vector <int> &widthColumns, char symbol, const vector<vector<string>> &date, vector<function<string(short, short, bool, bool, string)>> inspections):
+Table::Table(short left, short top, const vector<int> &heightLines, const vector <int> &widthColumns, char symbol, const vector<vector<string>> &date, vector<function<string(Logger&, bool, string&)>> inspections):
 
     // Инициализация полей таблицы
     left(left), top(top), heightLines(heightLines), widthColumns(widthColumns), symbol(symbol), date(date), inspections(inspections)
@@ -412,6 +410,11 @@ short Table::GetRightX()
 short Table::GetRightY()
 {
     return top;
+}
+
+void Table::ConnectLogger(Logger &log)
+{
+    this->log = &log;
 }
 
 void Table::RepaintActiveCell(ConsoleColor text, ConsoleColor background)

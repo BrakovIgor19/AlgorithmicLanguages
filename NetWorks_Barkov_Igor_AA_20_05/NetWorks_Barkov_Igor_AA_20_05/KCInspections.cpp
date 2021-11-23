@@ -1,104 +1,205 @@
 #include "KCInspections.h"
 
-string KCInspections::CheckId(short xError, short yError, bool showError, bool flag, string str)
+string KCInspections::CheckId(Logger& log, bool correctInput, string& str)
 {
-	return to_string(CheckingInput::Input<int>(xError, yError, showError, flag));
-}
+    string strBuf; int bufX = Console::getXcoord(), bufY = Console::getYcoord(), errorCode; string bufEmptyStr = "";
 
-string KCInspections::CheckName(short xError, short yError, bool showError, bool flag, string str)
-{
-	return CheckingInput::Input<string>(xError, yError, showError, flag);
-}
-
-string KCInspections::CheckNumberWorkshops(short xError, short yError, bool showError, bool flag, string str)
-{
-
-	return to_string(CheckingInput::Input<int>(xError, yError, showError, flag));
-}
-
-string KCInspections::ChecknumberWorkshopsOperation(short xError, short yError, bool showError, bool flag, string str)
-{
-    int errorCode; string strBuf; int bufX = Console::getXcoord(), bufY = Console::getYcoord(); string bufEmptyStr;	
-    do
-    {
-        int bufInt = CheckingInput::Input<int>(xError, yError, showError, flag);
-        bufEmptyStr = "";
-        if (bufInt <= stoi(str))
+    do {
+        Console::SetColor(Black, LightGreen);
+        Console::ShowCursor(true);
+        getline(cin, strBuf);
+        Console::ShowCursor(false);
+        errorCode = CheckingInput::CheckError<int>(strBuf);
+        if (errorCode == 0)
         {
-            return to_string(bufInt);
+            PlaySoundA("ui_hacking_passgood.wav", NULL, SND_ASYNC);
+            log.Update(CheckingInput::arrayErrors[errorCode]);
+            return strBuf;
         }
         else
         {
             PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
-            ConsoleFormatOutIn::WriteTextCenterThisCoord(xError, yError, CheckingInput::arrayErrors[4]);
-
-            if (showError == false)
-            {
-                Sleep(1000);
-                for (int i = 0; i < CheckingInput::arrayErrors[4].size(); ++i)
-                {
-                    bufEmptyStr += " ";
-                }
-                ConsoleFormatOutIn::WriteTextCenterThisCoord(xError, yError, bufEmptyStr);
-            }
-
-            strBuf = to_string(bufInt);
+            log.Update(CheckingInput::arrayErrors[errorCode]);
+            Console::SetColor(Black, LightGreen);
             Console::gotoxy(bufX, bufY);
             for (int i = 0; i < strBuf.size(); ++i)
             {
                 cout << " ";
             }
             Console::gotoxy(bufX, bufY);
-
             strBuf = "-1";
         }
-    } while (flag);
-
+    } while (correctInput);
     return strBuf;
 }
 
-string KCInspections::CheckEffectiveness(short xError, short yError, bool showError, bool flag, string str)
+string KCInspections::CheckName(Logger& log, bool correctInput, string& str)
 {
-    int errorCode; string strBuf; int bufX = Console::getXcoord(), bufY = Console::getYcoord(); string bufEmptyStr;
-    do
-    {
-        int bufInt = CheckingInput::Input<int>(xError, yError, showError, flag);
-        bufEmptyStr = "";
-        if ((bufInt >= 0) && (bufInt <= 100))
+    string strBuf; int bufX = Console::getXcoord(), bufY = Console::getYcoord(), errorCode; string bufEmptyStr = "";
+
+    do {
+        Console::SetColor(Black, LightGreen);
+        Console::ShowCursor(true);
+        getline(cin, strBuf);
+        Console::ShowCursor(false);
+        errorCode = CheckingInput::CheckError<string>(strBuf);
+        if (errorCode == 0)
         {
-            return to_string(bufInt);
+            PlaySoundA("ui_hacking_passgood.wav", NULL, SND_ASYNC);
+            log.Update(CheckingInput::arrayErrors[errorCode]);
+            return strBuf;
         }
         else
         {
             PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
-            ConsoleFormatOutIn::WriteTextCenterThisCoord(xError, yError, CheckingInput::arrayErrors[5]);
-
-            if (showError == false)
-            {
-                Sleep(1000);
-                for (int i = 0; i < CheckingInput::arrayErrors[5].size(); ++i)
-                {
-                    bufEmptyStr += " ";
-                }
-                ConsoleFormatOutIn::WriteTextCenterThisCoord(xError, yError, bufEmptyStr);
-            }
-
-            strBuf = to_string(bufInt);
+            log.Update(CheckingInput::arrayErrors[errorCode]);
+            Console::SetColor(Black, LightGreen);
             Console::gotoxy(bufX, bufY);
             for (int i = 0; i < strBuf.size(); ++i)
             {
                 cout << " ";
             }
             Console::gotoxy(bufX, bufY);
-
             strBuf = "-1";
         }
-    } while (flag);
+    } while (correctInput);
+    return strBuf;
+}
+
+string KCInspections::CheckNumberWorkshops(Logger& log, bool correctInput, string& str)
+{
+
+    string strBuf; int bufX = Console::getXcoord(), bufY = Console::getYcoord(), errorCode; string bufEmptyStr = "";
+
+    do {
+        Console::SetColor(Black, LightGreen);
+        Console::ShowCursor(true);
+        getline(cin, strBuf);
+        Console::ShowCursor(false);
+        errorCode = CheckingInput::CheckError<int>(strBuf);
+        if (errorCode == 0)
+        {
+            PlaySoundA("ui_hacking_passgood.wav", NULL, SND_ASYNC);
+            log.Update(CheckingInput::arrayErrors[errorCode]);
+            return strBuf;
+        }
+        else
+        {
+            PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
+            log.Update(CheckingInput::arrayErrors[errorCode]);
+            Console::SetColor(Black, LightGreen);
+            Console::gotoxy(bufX, bufY);
+            for (int i = 0; i < strBuf.size(); ++i)
+            {
+                cout << " ";
+            }
+            Console::gotoxy(bufX, bufY);
+            strBuf = "-1";
+        }
+    } while (correctInput);
+    return strBuf;
+}
+
+string KCInspections::ChecknumberWorkshopsOperation(Logger& log, bool correctInput, string& str)
+{
+    string strBuf; int bufX = Console::getXcoord(), bufY = Console::getYcoord(), errorCode; string bufEmptyStr = "";
+
+    do {
+        Console::SetColor(Black, LightGreen);
+        Console::ShowCursor(true);
+        getline(cin, strBuf);
+        Console::ShowCursor(false);
+        errorCode = CheckingInput::CheckError<string>(strBuf);
+        if (errorCode == 0)
+        {
+            if (stoi(strBuf) <= stoi(str))
+            {
+                PlaySoundA("ui_hacking_passgood.wav", NULL, SND_ASYNC);
+                log.Update(CheckingInput::arrayErrors[errorCode]);
+                return strBuf;
+            }
+            else
+            {
+                PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
+                log.Update(CheckingInput::arrayErrors[4]);
+                Console::SetColor(Black, LightGreen);
+                Console::gotoxy(bufX, bufY);
+                for (int i = 0; i < strBuf.size(); ++i)
+                {
+                    cout << " ";
+                }
+                Console::gotoxy(bufX, bufY);
+                strBuf = "-1";
+            }
+        }
+        else
+        {
+            PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
+            log.Update(CheckingInput::arrayErrors[errorCode]);
+            Console::SetColor(Black, LightGreen);
+            Console::gotoxy(bufX, bufY);
+            for (int i = 0; i < strBuf.size(); ++i)
+            {
+                cout << " ";
+            }
+            Console::gotoxy(bufX, bufY);
+            strBuf = "-1";
+        }
+    } while (correctInput);
+    return strBuf;
+}
+
+string KCInspections::CheckEffectiveness(Logger& log, bool correctInput, string& str)
+{
+    string strBuf; int bufX = Console::getXcoord(), bufY = Console::getYcoord(), errorCode; string bufEmptyStr = "";
+
+    do {
+        Console::SetColor(Black, LightGreen);
+        Console::ShowCursor(true);
+        getline(cin, strBuf);
+        Console::ShowCursor(false);
+        errorCode = CheckingInput::CheckError<string>(strBuf);
+        if (errorCode == 0)
+        {
+            if ((stoi(strBuf) >= 0) && (stoi(strBuf) <= 100))
+            {
+                PlaySoundA("ui_hacking_passgood.wav", NULL, SND_ASYNC);
+                log.Update(CheckingInput::arrayErrors[errorCode]);
+                return strBuf;
+            }
+            else
+            {
+                PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
+                log.Update(CheckingInput::arrayErrors[5]);
+                Console::SetColor(Black, LightGreen);
+                Console::gotoxy(bufX, bufY);
+                for (int i = 0; i < strBuf.size(); ++i)
+                {
+                    cout << " ";
+                }
+                Console::gotoxy(bufX, bufY);
+                strBuf = "-1";
+            }
+        }
+        else
+        {
+            PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
+            log.Update(CheckingInput::arrayErrors[errorCode]);
+            Console::SetColor(Black, LightGreen);
+            Console::gotoxy(bufX, bufY);
+            for (int i = 0; i < strBuf.size(); ++i)
+            {
+                cout << " ";
+            }
+            Console::gotoxy(bufX, bufY);
+            strBuf = "-1";
+        }
+    } while (correctInput);
 
     return strBuf;
 }
 
-vector<function<string(short, short, bool, bool, string)>> KCInspections::kcInspections = {
+vector<function<string(Logger&, bool, string&)>> KCInspections::kcInspections = {
                                                                                         CheckId,
                                                                                         CheckName,
                                                                                         CheckNumberWorkshops,

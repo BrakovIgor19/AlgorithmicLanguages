@@ -88,6 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,11 +141,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AuxiliaryFunctions.cpp" />
     <ClCompile Include="Cast.cpp" />
     <ClCompile Include="CheckingInput.cpp" />
     <ClCompile Include="ConsoleFormatOutIn.cpp" />
     <ClCompile Include="KCInspections.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="NetWorks_Barkov_Igor_AA_20_05.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -158,12 +161,13 @@
     <ClInclude Include="CheckingInput.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="ConsoleKey.h" />
-    <ClInclude Include="Draw.h" />
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="ConsoleFormatOutIn.h" />
     <ClInclude Include="AuxiliaryFunctions.h" />
     <ClInclude Include="ConsoleColor.h" />
     <ClInclude Include="KC.h" />
     <ClInclude Include="KCInspections.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="NetWorks.h" />
     <ClInclude Include="Pipe.h" />
