@@ -28,6 +28,7 @@ void Animation::Loading(const string& nameLoading, short time)
 	cout << nameLoading << " ";
 	short bufX = Console::getXcoord(), bufY = Console::getYcoord();
 	int persent = 0;
+	PlaySoundA("ui_hacking_fanhum_lp.wav", NULL, SND_ASYNC);
 	for (int i = 0; i < width; ++i)
 	{
 		if (i * 100 / width >= persent)

@@ -3,6 +3,7 @@
 void SaveDownload::SaveNetWorks(const NetWorks &netWorks)
 {
     ofstream fout;
+    setlocale(LC_CTYPE, "rus");
     string nameFile = netWorks.name + ".txt";
     fout.open(nameFile, ios::out);
     if (fout.is_open())

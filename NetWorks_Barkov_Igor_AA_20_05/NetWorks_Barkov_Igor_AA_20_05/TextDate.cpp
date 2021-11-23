@@ -9,17 +9,17 @@ const vector<string> TextDate::NetworkMenu = { "Трубы",
 
 };
 
-const vector<vector<string>> TextDate::pipeFields = { {"id",
+const vector<string> TextDate::pipeFields =  {"id",
 													  "Длина",
 													  "Диаметр",
 													  "Состояние"}
-};
+;
 
-const vector<vector<string>> TextDate::KCFields = { {"id",
+const vector<string> TextDate::KCFields =  {"id",
 													  "Название",
 													  "Кол-во цехов",
 													  "Рабочих цехов",
-													  "Эффективность"}
+													  "Эффективность"
 };
 
 const vector<string> TextDate::modeMenu = {

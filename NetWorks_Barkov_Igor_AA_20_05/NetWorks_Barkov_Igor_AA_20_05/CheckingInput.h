@@ -12,6 +12,7 @@ using std::cout;
 using std::endl;
 using std::getline;
 using std::is_same;
+
 #ifndef ChekingInput_H
 #define	ChekingInput_H
 

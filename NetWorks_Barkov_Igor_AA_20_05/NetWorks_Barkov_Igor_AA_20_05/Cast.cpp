@@ -3,7 +3,7 @@
 vector<vector<string>> Cast::ToVectorVectorsString(const vector<Pipe> &pipes)
 {
 	vector<vector<string>> date; date.reserve(pipes.size());
-	vector<string> strDateBuf; strDateBuf.reserve(4);
+	vector<string> strDateBuf; strDateBuf.resize(4);
 	for (int i = 0; i < pipes.size(); ++i)
 	{
 		strDateBuf[0] = to_string(pipes[i].id);
@@ -18,7 +18,7 @@ vector<vector<string>> Cast::ToVectorVectorsString(const vector<Pipe> &pipes)
 vector<vector<string>> Cast::ToVectorVectorsString(const vector<KC> &KCs)
 {
 	vector<vector<string>> date; date.reserve(KCs.size());
-	vector<string> strDateBuf; strDateBuf.reserve(5);
+	vector<string> strDateBuf; strDateBuf.resize(5);
 	for (int i = 0; i < KCs.size(); ++i)
 	{
 		strDateBuf[0] = to_string(KCs[i].id);
