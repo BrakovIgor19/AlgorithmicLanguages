@@ -74,7 +74,7 @@ bool Table::SelectCell()
             }
             case LEFT:
             {
-                if (activeCell[0] > 0)
+                if (activeCell[0] > 1)
                 {
                     PlaySoundA("ui_pipboy_highlight.wav", NULL, SND_ASYNC);
                     RepaintActiveCell(LightGreen, Black);
@@ -300,7 +300,10 @@ void Table::Add()
 
     // Запускаем ввод строки
     activeCell[0] = 0; activeCell[1] = heightLines.size() - 1;
-    for (int i = 0; i < widthColumns.size(); ++i)
+    date[filterDateIndex[activeCell[1]]][0] = to_string(Random::RandomUniquenessInt(1000, 9999));
+    ConsoleFormatOutIn::WriteTextCenterThisCoord(cellCoords[activeCell[1]][activeCell[0]][0] + widthColumns[activeCell[0]] / 2, cellCoords[activeCell[1]][activeCell[0]][1] + heightLines[activeCell[1]] / 2, date[filterDateIndex[activeCell[1]]][activeCell[0]]);
+    activeCell[0] = 1;
+    for (int i = 1; i < widthColumns.size(); ++i)
     {
         RepaintActiveCell(Black, LightGreen);
         EditCell(true);
@@ -433,3 +436,11 @@ void Table::RepaintActiveCell(ConsoleColor text, ConsoleColor background)
     ConsoleFormatOutIn::WriteTextCenterThisCoord(cellCoords[activeCell[1]][activeCell[0]][0] + widthColumns[activeCell[0]] / 2, cellCoords[activeCell[1]][activeCell[0]][1] + heightLines[activeCell[1]] / 2, date[filterDateIndex[activeCell[1]]][activeCell[0]]);
     Console::SetColor(background, text);
 }
+
+//void Table::Filter()
+//{
+//    for (int i = 0; i < filters.size(); ++i)
+//    {
+//        cin >> 
+//    }
+//}

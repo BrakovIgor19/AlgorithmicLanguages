@@ -14,6 +14,7 @@ struct TextDate
 	static const vector<string> pipeFields; // Параметры трубы
 	static const vector<string> KCFields; // Параметры компрессорной станции
 	static const vector<string> modeMenu;
+	static const vector<string> mapMenu;
 
 };
 

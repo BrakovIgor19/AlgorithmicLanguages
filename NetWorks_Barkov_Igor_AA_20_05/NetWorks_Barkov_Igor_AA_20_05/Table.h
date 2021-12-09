@@ -8,6 +8,7 @@
 #include "ConsoleFormatOutIn.h"
 #include "ConsoleKey.h"
 #include "Logger.h"
+#include "Random.h"
 
 #ifndef Table_H
 #define	Table_H
@@ -15,6 +16,7 @@
 using std::cout;
 using std::endl;
 using std::string;
+using std::to_string;
 using std::vector;
 using std::function;
 
@@ -38,11 +40,13 @@ public:
     short GetRightX();
     short GetRightY();
     void ConnectLogger(Logger &log);
+    void Filter();
 private:
     vector<Type> columnsType;
     vector<vector<vector<int>>> cellCoords;
-    vector<int> activeCell = {0, 1};
+    vector<int> activeCell = {1, 1};
     vector<function<string(Logger&, bool, string&)>> inspections;
+    vector<function<vector<int>(const vector<vector<string>>&, const string&)>> filters;
     const int left;
     const int top;
     vector<int> heightLines;

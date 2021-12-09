@@ -10,6 +10,7 @@
 #include "SaveDownload.h"
 #include "Logger.h"
 #include "Animation.h"
+#include "Map.h"
 
 int main()
 {
@@ -162,7 +163,7 @@ int main()
 				Table tablePipes(6, 4, bufIntVector1, { 10, 15, 15, 15 }, '#', bufStrVector1, PipeInspections::pipeInspections);
 				Table tableKCs(6, 4, bufIntVector2, { 10, 15, 20, 18, 18 }, '#', bufStrVector2, KCInspections::kcInspections);
 
-				Animation::Loading("Загрузка: " + oldNetWorks.name, 2000);
+				
 				// Меню сети				
 				while (page2)
 				{
@@ -241,14 +242,24 @@ int main()
 						page3 = true;
 						break;
 					}
+					case 2:
+					{
+						Map map = Map();
+						map.ConnectTable(oldNetWorks);
+						SaveDownload::DownloadMap(map);
+						map.Open();
+						SaveDownload::SaveMap(map);
+					}
 					}
 				}
 				oldNetWorks.pipes = Cast::ToVectorObject<Pipe>(tablePipes.date);
 				oldNetWorks.KCs = Cast::ToVectorObject<KC>(tableKCs.date);
 				SaveDownload::SaveNetWorks(oldNetWorks);
 				page2 = true;
+
 				break;
 			}
+
 		}		
 	}
 	page1 = true;

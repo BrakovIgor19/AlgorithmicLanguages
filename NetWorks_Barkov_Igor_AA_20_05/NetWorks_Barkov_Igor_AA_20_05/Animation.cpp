@@ -7,10 +7,12 @@ void Animation::Loading(const string& nameLoading, short time)
 	HDC descriptor = GetDC(GetConsoleWindow());	
 	HPEN Pen = CreatePen(PS_SOLID, 1, RGB(19, 246, 118)), PenFrame = CreatePen(PS_SOLID, 5, RGB(19, 246, 118)), PenClear = CreatePen(PS_SOLID, 300, RGB(0, 0, 0));
 	SelectObject(descriptor, Pen);
-	//Console::SetFont(15, L"Lucida Console");
-	int screenW = GetSystemMetrics(SM_CXSCREEN), screenH = GetSystemMetrics(SM_CYSCREEN);
+	RECT rectConsole;
+	HWND hWnd = GetForegroundWindow();
+	GetClientRect(hWnd, &rectConsole);
+	int screenW = rectConsole.right - rectConsole.left, screenH = rectConsole.bottom - rectConsole.top;
 	int width = 300, height = 60;
-	Sleep(1000);
+	//Sleep(1000);
 
 	// Рамочка
 	SelectObject(descriptor, PenFrame);
@@ -24,7 +26,7 @@ void Animation::Loading(const string& nameLoading, short time)
 	LineTo(descriptor, screenW / 2 - width / 2 - 10, screenH / 2 + height / 2 + 10);
 
 	// Запуск загрузки
-	Console::gotoxy(Console::GetWidthWindow() / 2 - nameLoading.size() / 2, Console::GetHeightWindow() / 2 );
+	Console::gotoxy(Console::GetWidthWindow() / 2 - nameLoading.size() / 2, Console::GetHeightWindow() / 2 - 3 );
 	cout << nameLoading << " ";
 	short bufX = Console::getXcoord(), bufY = Console::getYcoord();
 	int persent = 0;
