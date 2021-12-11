@@ -13,7 +13,6 @@
 
 using std::pair;
 
-
 struct Map
 {
     friend class SaveDownload;
@@ -37,12 +36,16 @@ private:
     void Clear();
     void AddKC();
     void AddPipe();
+    void DeleteKC();
+    void DeletePipe();
     void ChoosePen(HDC &descriptor, int width, ConsoleColor color);
     void ChooseBrush(HDC& descriptor, ConsoleColor color);
     bool SetActivePoint();
     int SearchNearestPoint(const pair <int, int> &point, ConsoleKey key);
     double ratio;
     int radius;
+    HBRUSH Brush;
+    HPEN Pen;
     NetWorks* netWork;
 
     

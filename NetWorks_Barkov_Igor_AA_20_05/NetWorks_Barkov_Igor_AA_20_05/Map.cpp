@@ -33,6 +33,16 @@ void Map::Open()
 				AddPipe();
 				break;
 			}
+			case 2:
+			{
+				DeleteKC();
+				break;
+			}
+			case 3:
+			{
+				DeletePipe();
+				break;
+			}
 			}
 		}
 		else
@@ -167,6 +177,7 @@ void Map::DrawFrame(int left, int top, int right, int bottom, int width, Console
 	LineTo(descriptor, left, bottom);
 	MoveToEx(descriptor, right, bottom, NULL);
 	LineTo(descriptor, right, top);
+	DeleteObject(Pen);
 	ReleaseDC(hwnd, descriptor);
 }
 
@@ -177,6 +188,8 @@ void Map::DrawRectangle(int left, int top, int right, int bottom, int width, Con
 	ChoosePen(descriptor, 4, frameColor);
 	ChooseBrush(descriptor, fillColor);
 	Rectangle(descriptor, left, top, right, bottom);
+	DeleteObject(Pen);
+	DeleteObject(Brush);
 	ReleaseDC(hwnd, descriptor);
 }
 
@@ -187,6 +200,8 @@ void Map::DrawCircle(int x0, int y0, int radius, int widthFrame, ConsoleColor fr
 	ChoosePen(descriptor, 4, frameColor);
 	ChooseBrush(descriptor, fillColor);
 	Ellipse(descriptor, x0 - radius, y0 - radius, x0 + radius, y0 + radius);
+	DeleteObject(Pen);
+	DeleteObject(Brush);
 	ReleaseDC(hwnd, descriptor);
 }
 
@@ -194,15 +209,17 @@ void Map::DrawArrow(pair<int, int> point1, pair<int, int> point2, ConsoleColor c
 {
 	HWND hwnd = GetConsoleWindow();
 	HDC descriptor = GetDC(hwnd);
-	ChoosePen(descriptor, 4, color);
+	ChoosePen(descriptor, 2, color);
 	ChooseBrush(descriptor, color);
-	int width = 6; double distance = sqrt(pow(abs(point1.first) - abs(point2.first), 2) + pow(abs(point1.second) - abs(point2.second), 2)), cos = (double)((point2.first - point1.first)/distance), sin = (double)((point1.second - point2.second) / distance);
-	POINT ptArrow[4] = { {point1.first - cos * width, point1.second + sin * width},
-						 {point2.first - cos * width, point2.second + sin * width},
-						 {point2.first + cos * width, point2.second - sin * width},
-						 {point2.first + cos * width, point2.second - sin * width}};
-									
-	Polygon(descriptor, ptArrow, 4); // Полигональная область стрелки
+	int width = 10, side = 5;  double distance = sqrt(pow(abs(point1.first) - abs(point2.first), 2) + pow(abs(point1.second) - abs(point2.second), 2)), Cos = (double)((point2.first - point1.first) / distance), Sin = (double)((point1.second - point2.second) / distance);
+	MoveToEx(descriptor, point1.first, point1.second, NULL);
+	LineTo(descriptor, point2.first, point2.second);
+	
+	POINT ptTriangle[3] = { {point2.first - radius * Cos, point2.second + radius * Sin},
+		                  {point2.first - 3 * radius * Cos - Sin * side, point2.second + 3 * radius * Sin - Cos * side},
+						  {point2.first - 3 * radius * Cos + Sin * side, point2.second + 3 * radius * Sin + Cos * side}};
+	 // Полигональная область стрелки
+	Polygon(descriptor, ptTriangle, 3);
 	ReleaseDC(hwnd, descriptor);
 }
 
@@ -271,13 +288,36 @@ void Map::AddKC()
 		{
 			case ENTER:
 			{ 
+
 				massivPoint.push_back({ {x, y}, {LightGreen, LightGreen} });
 				activePoint = massivPoint.size() - 1;
+				for (int i = 0; i < massivPoint.size(); ++i)
+				{
+					massivPoint[i].second.first = LightGreen;
+					massivPoint[i].second.second = LightGreen;
+				}
+				for (int i = 0; i < massivEdges.size(); ++i)
+				{
+					massivEdges[i].second = LightGreen;
+				}
+				Draw();
+				ReleaseDC(hWnd, descriptor);
 				return;
 			}
 			case ESC:
 			{
 				DrawCircle(x, y, radius, 1, Black, Black);
+				for (int i = 0; i < massivPoint.size(); ++i)
+				{
+					massivPoint[i].second.first = LightGreen;
+					massivPoint[i].second.second = LightGreen;
+				}
+				for (int i = 0; i < massivEdges.size(); ++i)
+				{
+					massivEdges[i].second = LightGreen;
+				}
+				Draw();
+				ReleaseDC(hWnd, descriptor);
 				return;
 			}
 			case LEFT:
@@ -287,6 +327,7 @@ void Map::AddKC()
 					DrawCircle(x, y, radius, 1, Black, Black);
 					x-=speed;
 				}
+				ReleaseDC(hWnd, descriptor);
 				break;
 			}
 			case RIGHT:
@@ -296,6 +337,7 @@ void Map::AddKC()
 					DrawCircle(x, y, radius, 1, Black, Black);
 					x+=speed;
 				}
+				ReleaseDC(hWnd, descriptor);
 				break;
 			}
 			case UP:
@@ -305,6 +347,7 @@ void Map::AddKC()
 					DrawCircle(x, y, radius, 1, Black, Black);
 					y -= speed;
 				}
+				ReleaseDC(hWnd, descriptor);
 				break;
 			}
 			case DOWN:
@@ -314,20 +357,11 @@ void Map::AddKC()
 					DrawCircle(x, y, radius, 1, Black, Black);
 					y += speed;
 				}
+				ReleaseDC(hWnd, descriptor);
 				break;
 			}			
 		}		
 		Draw();
-	}
-	ReleaseDC(hWnd, descriptor);
-	for (int i = 0; i < massivPoint.size(); ++i)
-	{
-		massivPoint[i].second.first = LightGreen;
-		massivPoint[i].second.second = LightGreen;
-	}
-	for (int i = 0; i < massivEdges.size(); ++i)
-	{
-		massivEdges[i].second = LightGreen;
 	}
 }
 
@@ -338,30 +372,109 @@ void Map::AddPipe()
 	{
 		point1.first = massivPoint[activePoint].first.first;
 		point1.second = massivPoint[activePoint].first.second;
-		if (SetActivePoint())
+		if (SetActivePoint() && (massivPoint[activePoint].first.first != point1.first) && (massivPoint[activePoint].first.second != point1.second))
 		{
 
 			point2.first = massivPoint[activePoint].first.first;
 			point2.second = massivPoint[activePoint].first.second;
 			massivEdges.push_back({ { { point1.first, point1.second }, { point2.first, point2.second} }, LightGreen });
-			DrawArrow(point1, point2, LightGreen);
-			for (int i = 0; i < massivPoint.size(); ++i)
+
+		}
+		for (int i = 0; i < massivPoint.size(); ++i)
+		{
+			massivPoint[i].second.first = LightGreen;
+			massivPoint[i].second.second = LightGreen;
+		}
+		for (int i = 0; i < massivEdges.size(); ++i)
+		{
+			massivEdges[i].second = LightGreen;
+		}
+		Draw();
+	}
+}
+
+void Map::DeleteKC()
+{
+	pair<int, int> point;
+	if (SetActivePoint())
+	{
+		point.first = massivPoint[activePoint].first.first;
+		point.second = massivPoint[activePoint].first.second;
+		for (int i = 0; i < massivEdges.size(); ++i)
+		{
+			if ((massivEdges[i].first.first.first == point.first) && (massivEdges[i].first.first.second == point.second) ||
+				(massivEdges[i].first.second.first == point.first) && (massivEdges[i].first.second.second == point.second))
 			{
-				massivPoint[i].second.first = LightGreen;
-				massivPoint[i].second.second = LightGreen;				
+				massivEdges[i].second = Black;
+				Draw();
+				massivEdges.erase(massivEdges.begin() + i);
+				--i;
 			}
+		}
+		massivPoint[activePoint].second.first = Black;
+		massivPoint[activePoint].second.second = Black;
+		Draw();
+		massivPoint.erase(massivPoint.begin() + activePoint);
+		if (activePoint >= massivPoint.size())
+		{
+			activePoint = massivPoint.size() - 1;
+		}
+		for (int i = 0; i < massivPoint.size(); ++i)
+		{
+			massivPoint[i].second.first = LightGreen;
+			massivPoint[i].second.second = LightGreen;
+		}
+		for (int i = 0; i < massivEdges.size(); ++i)
+		{
+			massivEdges[i].second = LightGreen;
+		}
+		Draw();
+	}
+
+}
+
+void Map::DeletePipe()
+{
+	pair<int, int> point1, point2;
+	if (SetActivePoint())
+	{
+		point1.first = massivPoint[activePoint].first.first;
+		point1.second = massivPoint[activePoint].first.second;
+		if (SetActivePoint() && (massivPoint[activePoint].first.first != point1.first) && (massivPoint[activePoint].first.second != point1.second))
+		{
+	
+			point2.first = massivPoint[activePoint].first.first;
+			point2.second = massivPoint[activePoint].first.second;
 			for (int i = 0; i < massivEdges.size(); ++i)
 			{
-				massivEdges[i].second = LightGreen;
+				if ((massivEdges[i].first.first.first == point1.first) &&
+				   (massivEdges[i].first.first.second == point1.second) &&
+				   (massivEdges[i].first.second.first == point2.first) &&
+				   (massivEdges[i].first.second.second == point2.second))
+				{
+					massivEdges[i].second = Black;
+					Draw();
+					massivEdges.erase(massivEdges.begin() + i);
+					break;
+				}
 			}
-			Draw();
 		}
 	}
+	for (int i = 0; i < massivPoint.size(); ++i)
+	{
+		massivPoint[i].second.first = LightGreen;
+		massivPoint[i].second.second = LightGreen;
+	}
+	for (int i = 0; i < massivEdges.size(); ++i)
+	{
+		massivEdges[i].second = LightGreen;
+	}
+	Draw();
 }
 
 void Map::ChoosePen(HDC &descriptor, int width, ConsoleColor color)
 {
-	HPEN Pen = CreatePen(PS_SOLID, width, RGB(0, 0, 0));
+	Pen = CreatePen(PS_SOLID, width, RGB(0, 0, 0));
 	if (color == LightGreen)
 	{
 		Pen = CreatePen(PS_SOLID, width, RGB(19, 246, 118));
@@ -374,26 +487,26 @@ void Map::ChoosePen(HDC &descriptor, int width, ConsoleColor color)
 	{
 		Pen = CreatePen(PS_SOLID, width, RGB(11, 102, 46));
 	}
-	SelectObject(descriptor, Pen);
+	SelectObject(descriptor, Pen);	
 	return;
 }
 
 void Map::ChooseBrush(HDC &descriptor, ConsoleColor color)
 {
-	HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+	Brush = CreateSolidBrush(RGB(0, 0, 0));
 	if (color == LightGreen)
 	{
-		hBrush = CreateSolidBrush(RGB(19, 246, 118));
+		Brush = CreateSolidBrush(RGB(19, 246, 118));
 	}
 	else if (color == Black)
 	{
-		hBrush = CreateSolidBrush(RGB(0, 0, 0));
+		Brush = CreateSolidBrush(RGB(0, 0, 0));
 	}
 	else if (color == Green)
 	{
-		hBrush = CreateSolidBrush(RGB(11, 102, 46));
+		Brush = CreateSolidBrush(RGB(11, 102, 46));
 	}
-	SelectObject(descriptor, hBrush);
+	SelectObject(descriptor, Brush);	
 	return;
 }
 
