@@ -7,7 +7,6 @@ using std::string;
 
 struct KC
 {
-    int id; 
     string name; 
     int numberWorkshops; 
     int numberWorkshopsOperation; 

@@ -7,7 +7,6 @@ using std::string;
 
 struct Pipe
 {
-    int id; 
     float lenght; 
     int diameter; 
     string signRepair; 

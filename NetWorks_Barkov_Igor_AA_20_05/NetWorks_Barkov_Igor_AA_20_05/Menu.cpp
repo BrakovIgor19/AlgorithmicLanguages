@@ -134,7 +134,7 @@ short Menu::ActiveMenuAlignedRight(short x, short y, const vector<string>& strMe
             setlocale(LC_CTYPE, "C");
             Console::gotoxy(x - 2, y + activeMenu);
             cout << "\xFE";
-            setlocale(LC_CTYPE, "rus");
+            setlocale(LC_CTYPE, ".1251");
             return activeMenu;
         }
     }

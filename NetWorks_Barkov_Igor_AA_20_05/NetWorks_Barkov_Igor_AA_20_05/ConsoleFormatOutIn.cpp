@@ -13,7 +13,6 @@ string ConsoleFormatOutIn::ReadStringWithoutMovingCursor()
 
 void ConsoleFormatOutIn::WriteTextCenterThisCoord(short x, short y, const string& text)
 {
-	
 	Console::gotoxy(x - (text.size() / 2), y);
 	cout << text;
 }

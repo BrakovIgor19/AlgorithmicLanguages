@@ -2,18 +2,19 @@
 #include <vector>
 #include "Pipe.h"
 #include "KC.h"
+#include <unordered_map>
 
 #ifndef NetWorks_H
 #define	NetWorks_H
 
 using std::string;
-using std::vector;
+using std::unordered_map;
 
 struct NetWorks
 {
 	string name;
-	vector<Pipe> pipes;
-	vector<KC> KCs;
+	unordered_map<int, Pipe> pipes;
+	unordered_map<int, KC> KCs;
 };
 
 #endif 

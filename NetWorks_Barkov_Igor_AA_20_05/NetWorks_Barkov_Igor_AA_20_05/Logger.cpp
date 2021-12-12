@@ -83,5 +83,5 @@ void Logger::DrawFrame(short width, short height, char symbol) const
     {
         cout << symbol;
     }
-    setlocale(LC_CTYPE, "rus");
+    setlocale(LC_CTYPE, ".1251");
 }

@@ -12,6 +12,7 @@
 #include "Animation.h"
 #include "Map.h"
 
+
 int main()
 {
 
@@ -156,7 +157,7 @@ int main()
 				}
 				//Переводим данные для таблицы
 				vector<vector<string>> bufStrVector1, bufStrVector2; bufStrVector1.resize(1); bufStrVector2.resize(1); bufStrVector1[0] = TextDate::pipeFields; bufStrVector2[0] = TextDate::KCFields;
-				vector<vector<string>> bufStrVector12 = Cast::ToVectorVectorsString(oldNetWorks.pipes), bufStrVector22 = Cast::ToVectorVectorsString(oldNetWorks.KCs);
+				vector<vector<string>> bufStrVector12, bufStrVector22; bufStrVector12 = Cast::ToVectorVectorsString(oldNetWorks.pipes), bufStrVector22 = Cast::ToVectorVectorsString(oldNetWorks.KCs);
 				bufStrVector1.insert(bufStrVector1.end(), bufStrVector12.begin(), bufStrVector12.end()); bufStrVector2.insert(bufStrVector2.end(), bufStrVector22.begin(), bufStrVector22.end());
 
 				// Создаем  таблицы 
@@ -205,6 +206,9 @@ int main()
 							}
 							}
 						}
+						oldNetWorks.pipes = Cast::ToVectorObject<Pipe>(tablePipes.date);
+						oldNetWorks.KCs = Cast::ToVectorObject<KC>(tableKCs.date);
+						SaveDownload::SaveNetWorks(oldNetWorks);
 						page3 = true;
 						break;
 					}
@@ -239,6 +243,9 @@ int main()
 							}
 							}
 						}
+						oldNetWorks.pipes = Cast::ToVectorObject<Pipe>(tablePipes.date);
+						oldNetWorks.KCs = Cast::ToVectorObject<KC>(tableKCs.date);
+						SaveDownload::SaveNetWorks(oldNetWorks);
 						page3 = true;
 						break;
 					}
@@ -252,11 +259,7 @@ int main()
 					}
 					}
 				}
-				oldNetWorks.pipes = Cast::ToVectorObject<Pipe>(tablePipes.date);
-				oldNetWorks.KCs = Cast::ToVectorObject<KC>(tableKCs.date);
-				SaveDownload::SaveNetWorks(oldNetWorks);
 				page2 = true;
-
 				break;
 			}
 
