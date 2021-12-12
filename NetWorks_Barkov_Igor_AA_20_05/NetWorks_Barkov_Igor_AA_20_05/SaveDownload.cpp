@@ -182,6 +182,7 @@ void SaveDownload::DownloadMap(Map& map)
                 Set.insert(stoi(str));
             }
             map.graph.vertexes.emplace(id, Set);
+            Set.clear();
         }
     }
     fin.close();

@@ -43,6 +43,11 @@ void Map::Open()
 				DeletePipe();
 				break;
 			}
+			case 4:
+			{
+				TopSort();
+				break;
+			}
 			}
 		}
 		else
@@ -400,14 +405,16 @@ void Map::AddPipe()
 		point1.first = massivPoint[activePoint].second.first.first;
 		point1.second = massivPoint[activePoint].second.first.second;
 		id1 = massivPoint[activePoint].first;
-		if (SetActivePoint() && (massivPoint[activePoint].second.first.first != point1.first) && (massivPoint[activePoint].second.first.second != point1.second))
+		if (SetActivePoint())
 		{
-
-			point2.first = massivPoint[activePoint].second.first.first;
-			point2.second = massivPoint[activePoint].second.first.second;
-			id2 = massivPoint[activePoint].first;
-			massivEdges.push_back( {id, { { { point1.first, point1.second }, { point2.first, point2.second} }, LightGreen } });
-			graph.AddEdge(id, { id1, id2 });
+			if ((massivPoint[activePoint].second.first.first != point1.first) || (massivPoint[activePoint].second.first.second != point1.second))
+			{
+				point2.first = massivPoint[activePoint].second.first.first;
+				point2.second = massivPoint[activePoint].second.first.second;
+				id2 = massivPoint[activePoint].first;
+				massivEdges.push_back({ id, { { { point1.first, point1.second }, { point2.first, point2.second} }, LightGreen } });
+				graph.AddEdge(id, { id1, id2 });
+			}
 		}
 		for (int i = 0; i < massivPoint.size(); ++i)
 		{
@@ -665,6 +672,20 @@ int Map::SearchNearestPoint(const pair<int, int> &point, ConsoleKey key)
 		return index;
 	}
 	return index;
+}
+
+void Map::TopSort()
+{
+	unordered_map<int, int> graphTopSort = graph.TopologicalSorting();
+	for (int i = 0; i < massivPoint.size(); ++i)
+	{
+		
+		DrawTextOut(massivPoint[i].second.first.first - 4, massivPoint[i].second.first.second - 8, std::to_string(graphTopSort[massivPoint[i].first]), Black, LightGreen);
+	}
+	while (ESC != _getch())
+	{
+	}
+	Draw();
 }
 
 

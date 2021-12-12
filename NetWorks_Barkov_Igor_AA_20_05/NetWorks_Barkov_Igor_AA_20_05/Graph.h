@@ -19,6 +19,8 @@ struct Graph
 	void RemoveVertex(int number);
 	void RemoveEdge(int number);
 	int FindDegreeOutcome(int number);
+	unordered_map<int, int> TopologicalSorting();
+
 };
 
 #endif
