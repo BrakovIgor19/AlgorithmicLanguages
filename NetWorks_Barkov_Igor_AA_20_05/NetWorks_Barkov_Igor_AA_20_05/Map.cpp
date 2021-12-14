@@ -653,17 +653,44 @@ int Map::SearchNearestPoint(const pair<int, int> &point, ConsoleKey key)
 }
 
 void Map::TopSort()
-{
+{	
+	bool flag = true;
 	unordered_map<int, int> graphTopSort = graph.TopologicalSorting();
-	for (int i = 0; i < massivPoint.size(); ++i)
+	if (graphTopSort.size() != graph.vertexes.size())
 	{
-		
-		DrawTextOut(massivPoint[i].second.first.first - 4, massivPoint[i].second.first.second - 8, std::to_string(graphTopSort[massivPoint[i].first]), Black, LightGreen);
-	}
-	while (ESC != _getch())
+		flag = false;
+	}	
+	if (flag)
 	{
+		for (int i = 0; i < massivPoint.size(); ++i)
+		{
+
+			DrawTextOut(massivPoint[i].second.first.first - 4, massivPoint[i].second.first.second - 8, std::to_string(graphTopSort[massivPoint[i].first]), Black, LightGreen);
+		}
+		while (ESC != _getch())
+		{
+		}
+		Draw();
 	}
-	Draw();
+	else
+	{
+		string str = "В графе существует цикл, топологическая сортировка невозможна";
+		Console::gotoxy(Console::GetWidthWindow() / 2 - str.size(), 10);
+		int bufX = Console::getXcoord(), bufY = Console::getYcoord();
+		cout << str;
+		Console::gotoxy(bufX, bufY);
+		Console::SetColor(Black, Black);
+		Sleep(1000);
+		for (int i = 0; i < str.size(); ++i)
+		{
+			cout << " ";
+		}
+		Console::gotoxy(bufX, bufY);
+		Console::SetColor(LightGreen, Black);
+
+	}
+	
+	
 }
 
 
