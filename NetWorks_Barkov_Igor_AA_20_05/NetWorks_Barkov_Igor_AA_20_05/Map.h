@@ -32,6 +32,8 @@ private:
     Graph graph;
     vector<pair<int, pair<pair<int, int>, pair<ConsoleColor, ConsoleColor>>>> massivPoint;
     vector<pair<int, pair<pair<pair<int, int>, pair<int, int>>, ConsoleColor>>> massivEdges;
+    unordered_map<ConsoleColor, HPEN> pens;
+    unordered_map<ConsoleColor, HBRUSH> brushes;
     int activeMainMenu = 0;
     int activePoint = 0;
     double ratio;

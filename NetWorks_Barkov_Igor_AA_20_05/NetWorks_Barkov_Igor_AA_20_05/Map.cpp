@@ -10,6 +10,9 @@ Map::Map()
 	ratio = (double)(rectConsole.right - rectConsole.left)/Console::GetWidthWindow();
 	massivPoint.reserve(100);
 	radius = 10;
+	pens.emplace(Black, CreatePen(PS_SOLID, 3, RGB(0, 0, 0))); brushes.emplace(Black, CreateSolidBrush(RGB(0, 0, 0)));
+	pens.emplace(Green, CreatePen(PS_SOLID, 3, RGB(11, 102, 46))); brushes.emplace(Green, CreateSolidBrush(RGB(11, 102, 46)));
+	pens.emplace(LightGreen, CreatePen(PS_SOLID, 3, RGB(19, 246, 118))); brushes.emplace(LightGreen, CreateSolidBrush(RGB(19, 246, 118)));
 }
 
 void Map::Open()
@@ -515,39 +518,14 @@ void Map::DeletePipe()
 
 void Map::ChoosePen(int width, ConsoleColor color)
 {
-	pen = CreatePen(PS_SOLID, width, RGB(0, 0, 0));
-	if (color == LightGreen)
-	{
-		pen = CreatePen(PS_SOLID, width, RGB(19, 246, 118));
-	}
-	else if (color == Black)
-	{
-		pen = CreatePen(PS_SOLID, width, RGB(0, 0, 0));
-	}
-	else if (color == Green)
-	{
-		pen = CreatePen(PS_SOLID, width, RGB(11, 102, 46));
-	}
-	SelectObject(hdc, pen);
+	SelectObject(hdc, pens[color]);
 	return;
 }
 
 void Map::ChooseBrush(ConsoleColor color)
 {
-	brush = CreateSolidBrush(RGB(0, 0, 0));
-	if (color == LightGreen)
-	{
-		brush = CreateSolidBrush(RGB(19, 246, 118));
-	}
-	else if (color == Black)
-	{
-		brush = CreateSolidBrush(RGB(0, 0, 0));
-	}
-	else if (color == Green)
-	{
-		brush = CreateSolidBrush(RGB(11, 102, 46));
-	}
-	SelectObject(hdc, brush);
+
+	SelectObject(hdc, brushes[color]);
 	return;
 }
 
