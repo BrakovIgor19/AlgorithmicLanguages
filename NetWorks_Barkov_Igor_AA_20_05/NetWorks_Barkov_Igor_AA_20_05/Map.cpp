@@ -13,12 +13,17 @@ Map::Map()
 	pens.emplace(Black, CreatePen(PS_SOLID, 3, RGB(0, 0, 0))); brushes.emplace(Black, CreateSolidBrush(RGB(0, 0, 0)));
 	pens.emplace(Green, CreatePen(PS_SOLID, 3, RGB(11, 102, 46))); brushes.emplace(Green, CreateSolidBrush(RGB(11, 102, 46)));
 	pens.emplace(LightGreen, CreatePen(PS_SOLID, 3, RGB(19, 246, 118))); brushes.emplace(LightGreen, CreateSolidBrush(RGB(19, 246, 118)));
+
 }
 
 void Map::Open()
 {
 	system("cls");
 	// Отрисуем начальное МэйнМеню
+	for (auto& [id, pair] : massivEdges)
+	{
+		graph.edgeWeights.emplace(id, netWork->pipes[id].lenght);
+	}
 	Draw();
 	while (true)
 	{
@@ -51,10 +56,15 @@ void Map::Open()
 				TopSort();
 				break;
 			}
+			case 5:
+			{
+				FindingShortestPath();
+				break;
+			}
 			}
 		}
 		else
-		{
+		{			
 			break;
 		}
 	}
@@ -68,7 +78,7 @@ void Map::ConnectTable(NetWorks& netWork)
 bool Map::SetMainMenu()
 {
 	int left = 15, top = 15;
-	int width = 190, height = 90, between = 10;
+	int width = 170, height = 90, between = 10;
 	vector<int> bufArray; bufArray.reserve(TextDate::mapMenu.size());
 	for (int i = 0; i < TextDate::mapMenu.size(); ++i)
 	{
@@ -482,17 +492,21 @@ void Map::DeletePipe()
 	{
 		point1.first = massivPoint[activePoint].second.first.first;
 		point1.second = massivPoint[activePoint].second.first.second;
-		if (SetActivePoint() && (massivPoint[activePoint].second.first.first != point1.first) && (massivPoint[activePoint].second.first.second != point1.second))
+		if (SetActivePoint() && ((massivPoint[activePoint].second.first.first != point1.first) || (massivPoint[activePoint].second.first.second != point1.second)))
 		{
 	
 			point2.first = massivPoint[activePoint].second.first.first;
 			point2.second = massivPoint[activePoint].second.first.second;
 			for (int i = 0; i < massivEdges.size(); ++i)
 			{
-				if ((massivEdges[i].second.first.first.first == point1.first) &&
+				if (((massivEdges[i].second.first.first.first == point1.first) &&
 				   (massivEdges[i].second.first.first.second == point1.second) &&
 				   (massivEdges[i].second.first.second.first == point2.first) &&
-				   (massivEdges[i].second.first.second.second == point2.second))
+				   (massivEdges[i].second.first.second.second == point2.second)) ||
+					((massivEdges[i].second.first.first.first == point2.first) &&
+					(massivEdges[i].second.first.first.second == point2.second) &&
+					(massivEdges[i].second.first.second.first == point1.first) &&
+					(massivEdges[i].second.first.second.second == point1.second)))
 				{
 					id = massivEdges[i].first;
 					massivEdges[i].second.second = Black;
@@ -662,20 +676,25 @@ void Map::TopSort()
 	}	
 	if (flag)
 	{
-		for (int i = 0; i < massivPoint.size(); ++i)
+		
+		for (auto& [id, point]: massivPoint)
 		{
-
-			DrawTextOut(massivPoint[i].second.first.first - 4, massivPoint[i].second.first.second - 8, std::to_string(graphTopSort[massivPoint[i].first]), Black, LightGreen);
+			DrawTextOut(point.first.first - 4, point.first.second - 8, std::to_string(graphTopSort[id]), Black, LightGreen);
 		}
 		while (ESC != _getch())
 		{
+		}
+		for (auto& [id, point] : massivPoint)
+		{
+			DrawTextOut(point.first.first - 4, point.first.second - 8, std::to_string(graphTopSort[id]), LightGreen, Black);
 		}
 		Draw();
 	}
 	else
 	{
+		PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
 		string str = "В графе существует цикл, топологическая сортировка невозможна";
-		Console::gotoxy(Console::GetWidthWindow() / 2 - str.size(), 10);
+		Console::gotoxy(Console::GetWidthWindow() / 2 - str.size(), 8);
 		int bufX = Console::getXcoord(), bufY = Console::getYcoord();
 		cout << str;
 		Console::gotoxy(bufX, bufY);
@@ -691,6 +710,153 @@ void Map::TopSort()
 	}
 	
 	
+}
+
+void Map::FindingShortestPath()
+{
+	vector<int> vectorShortestPaths;
+	pair<int, int> point1, point2;
+	int vertex1, vertex2;
+	if (SetActivePoint())
+	{
+		point1.first = massivPoint[activePoint].second.first.first;
+		point1.second = massivPoint[activePoint].second.first.second;
+		vertex1 = massivPoint[activePoint].first;
+		if (SetActivePoint() && ((massivPoint[activePoint].second.first.first != point1.first) || (massivPoint[activePoint].second.first.second != point1.second)))
+		{
+			point2.first = massivPoint[activePoint].second.first.first;
+			point2.second = massivPoint[activePoint].second.first.second;
+			vertex2 = massivPoint[activePoint].first;
+			vectorShortestPaths = graph.FindingShortestPathDijkstra(vertex1, vertex2);
+			if ((vectorShortestPaths[0] + 1 >= 0) && (vectorShortestPaths[0] + 1 <= 0.001))
+			{
+				PlaySoundA("ui_hacking_passbad.wav", NULL, SND_ASYNC);
+				string str = "Нет пути!";
+				Console::gotoxy(Console::GetWidthWindow() / 2 - str.size(), 8);
+				int bufX = Console::getXcoord(), bufY = Console::getYcoord();
+				cout << str;
+				Console::gotoxy(bufX, bufY);
+				Console::SetColor(Black, Black);
+				Sleep(1000);
+				for (int i = 0; i < str.size(); ++i)
+				{
+					cout << " ";
+				}
+				Console::gotoxy(bufX, bufY);
+				Console::SetColor(LightGreen, Black);
+				for (int i = 0; i < massivPoint.size(); ++i)
+				{
+					massivPoint[i].second.second.first = LightGreen;
+					massivPoint[i].second.second.second = LightGreen;
+				}
+				for (int i = 0; i < massivEdges.size(); ++i)
+				{
+					massivEdges[i].second.second = LightGreen;
+				}
+				Draw();
+				return;
+			}
+			for (int i = 0; i < massivPoint.size(); ++i)
+			{
+				massivPoint[i].second.second.first = Green;
+				massivPoint[i].second.second.second = Green;
+			}
+			for (int i = 0; i < massivEdges.size(); ++i)
+			{
+				massivEdges[i].second.second = Green;
+			}
+			int index;
+			for (int i = 0; i < vectorShortestPaths.size(); ++i)
+			{
+				if (i + 1 != vectorShortestPaths.size())
+				{
+					
+					for (int j = 0; j < massivEdges.size(); ++j)
+					{
+						if (graph.FindIdEdges(vectorShortestPaths[i], vectorShortestPaths[i + 1]) == massivEdges[j].first)
+						{
+							index = j;
+							break;
+						}
+					}
+					massivEdges[index].second.second = LightGreen;
+				}
+				for (int j = 0; j < massivPoint.size(); ++j)
+				{
+					if (vectorShortestPaths[i] == massivPoint[j].first)
+					{
+						index = j;
+						break;
+					}
+				}
+				massivPoint[index].second.second.first = LightGreen;
+				massivPoint[index].second.second.second = LightGreen;
+			}
+			int index1, index2;
+			for (auto& [id, pair] : graph.edges)
+			{
+				for (int j = 0; j < massivPoint.size(); ++j)
+				{
+					if (pair.first == massivPoint[j].first)
+					{
+						index1 = j;
+						break;
+					}
+				}
+				for (int j = 0; j < massivPoint.size(); ++j)
+				{
+					if (pair.second == massivPoint[j].first)
+					{
+						index2 = j;
+						break;
+					}
+				}
+				DrawTextOut((massivPoint[index1].second.first.first + 
+					        massivPoint[index2].second.first.first) / 2,
+					        (massivPoint[index1].second.first.second +
+					        massivPoint[index2].second.first.second) / 2,
+					std::to_string((int)graph.edgeWeights[id]), LightGreen, Black);
+			}
+			Draw();
+			while (ESC != _getch())
+			{
+			}
+			for (auto& [id, pair] : graph.edges)
+			{
+				for (int j = 0; j < massivPoint.size(); ++j)
+				{
+					if (pair.first == massivPoint[j].first)
+					{
+						index1 = j;
+						break;
+					}
+				}
+				for (int j = 0; j < massivPoint.size(); ++j)
+				{
+					if (pair.second == massivPoint[j].first)
+					{
+						index2 = j;
+						break;
+					}
+				}
+				DrawTextOut((massivPoint[index1].second.first.first +
+					massivPoint[index2].second.first.first) / 2,
+					(massivPoint[index1].second.first.second +
+					massivPoint[index2].second.first.second) / 2,
+					std::to_string((int)graph.edgeWeights[id]), Black, Black);
+			}
+			for (int i = 0; i < massivPoint.size(); ++i)
+			{
+				massivPoint[i].second.second.first = LightGreen;
+				massivPoint[i].second.second.second = LightGreen;
+			}
+			for (int i = 0; i < massivEdges.size(); ++i)
+			{
+				massivEdges[i].second.second = LightGreen;
+			}
+			Draw();
+		}
+	}
 }
 
 

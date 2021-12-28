@@ -72,3 +72,81 @@ unordered_map<int, int> Graph::TopologicalSorting()
 	}
 	return sortingMap;
 }
+
+vector<int> Graph::FindingShortestPathDijkstra(int vertex1, int vertex2)
+{
+	double INF = (double)INT_MAX;
+	unordered_map<int, pair<bool, double>> vectorShortestPaths;
+	pair<bool, double> Startpair = { false, INF }, startsPairs = { false, 0 };
+	for (auto& [id, sets]: vertexes)
+	{
+		if (id != vertex1)
+		{
+			vectorShortestPaths.emplace(id, Startpair);
+		}
+	}
+	vectorShortestPaths.emplace(vertex1, startsPairs);
+	int permanent_label = vertex1;
+	double min; int Idmin;
+	for (int i = 0; i < vertexes.size() - 1; ++i)
+	{
+		for (auto& id : vertexes[permanent_label])
+		{
+			int edgeId = FindIdEdges(permanent_label, id);
+			if (edgeId != -1)
+			{
+				if (edgeWeights[edgeId] + vectorShortestPaths[permanent_label].second < vectorShortestPaths[id].second)
+				{
+					vectorShortestPaths[id].second = edgeWeights[edgeId] + vectorShortestPaths[permanent_label].second;
+				}
+			}
+		}
+		vectorShortestPaths[permanent_label].first = true;
+		min = INF;
+		for (auto& [id, pair] : vectorShortestPaths)
+		{
+			if ((pair.second < min) && (pair.first != true))
+			{
+				min = pair.second;
+				Idmin = id;
+			}
+		}		
+		permanent_label = Idmin;		
+	}
+	int distance = vectorShortestPaths[vertex2].second;
+	vector<int> vertx; int bufvert = vertex2, bufIdedge;
+	if ((distance - INF >= 0) && (distance - INF <= 0.001))
+	{
+		vertx.push_back(-1);
+		return vertx;
+	}
+	vertx.push_back(bufvert);
+	while (distance > 0.001)
+	{
+		for (auto& id : vertexes[bufvert])
+		{
+			bufIdedge = FindIdEdges(id, bufvert);
+			if ((distance - edgeWeights[bufIdedge] - vectorShortestPaths[id].second >= 0) && ((distance - edgeWeights[bufIdedge] - vectorShortestPaths[id].second <= 0.001)))
+			{
+				bufvert = id;
+				vertx.push_back(bufvert);
+				distance -= edgeWeights[bufIdedge];
+				break;
+			}
+		}
+	}
+	std::reverse(vertx.begin(), vertx.end());
+	return vertx;
+}
+
+int Graph::FindIdEdges(int id1, int id2)
+{
+	for (auto& [id, pair] : edges)
+	{
+		if ((pair.first == id1) && (pair.second == id2))
+		{
+			return id;
+		}
+	}
+	return -1;
+}
